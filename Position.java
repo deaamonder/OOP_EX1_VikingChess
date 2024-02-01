@@ -1,20 +1,20 @@
 public class Position{
-    private int Colp,Rowp;
+    private int col, row;
     int steps;
     public Position(int a,int b){
-        Rowp=b;
-        Colp=a;
+        row =b;
+        col =a;
     }
     public Position(int a,int b,int c){
-        Rowp=b;
-        Colp=a;
+        row =b;
+        col =a;
         steps=c;
     }
     int Getrow(){
-        return Rowp;
+        return row;
     }
     int Getcol(){
-        return Colp;
+        return col;
     }
     int Getsteps(){return steps;}
 

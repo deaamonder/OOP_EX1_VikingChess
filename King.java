@@ -4,13 +4,13 @@ public class King extends ConcretePiece {
     Player Owner;
     int Number;
     int Movekilled;
-    Position Pos;
-    ArrayList<Position> Moveh = new ArrayList<>();
+    Position kingPosition;
+    ArrayList<Position> KingMoveHistory = new ArrayList<>();
 
     public King(Position pos, Player owner) {
-        Pos = pos;
+        kingPosition = pos;
         Owner = owner;
-        Moveh.add(pos);
+        KingMoveHistory.add(pos);
     }
 
     @Override
@@ -24,15 +24,15 @@ public class King extends ConcretePiece {
     }
 
     public void Moved(Position a) {
-        Moveh.add(a);
+        KingMoveHistory.add(a);
     }
 
     public void Setpos(Position a) {
-        this.Pos = a;
+        this.kingPosition = a;
     }
 
     public Position Getpos() {
-        return Pos;
+        return kingPosition;
     }
 
     public void setMovekilled(int a) {

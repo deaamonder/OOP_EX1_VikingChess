@@ -2,240 +2,239 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.*;
 
 public class GameLogic implements PlayableLogic {
 
-    ConcretePiece[][] board = new ConcretePiece[11][11];
+    private ConcretePiece[][] gameBoard = new ConcretePiece[11][11];
 
-    Player player1;
-    Player player2;
-    King kings;
-    Pawn[] Attacker;
-    Pawn[] Defender;
-    ArrayList<Position> MoveH;
-    int nummoves;
+    private Player P1;
+    private Player P2;
+    private King theKing;
+    private Pawn[] attacker;
+    private Pawn[] defender;
+    private ArrayList<Position> moveHistory;
+    private int numOfMoves;
 
     public GameLogic() {
-        Attacker = new Pawn[25];
-        Defender = new Pawn[14];
-        player1 = new ConcretePlayer(1);
-        player2 = new ConcretePlayer(2);
-        kings = new King(new Position(5, 5), player1);
-        MoveH = new ArrayList<>();
-        board = newGameboard();
+        attacker = new Pawn[25];
+        defender = new Pawn[14];
+        P1 = new ConcretePlayer(1);
+        P2 = new ConcretePlayer(2);
+        theKing = new King(new Position(5, 5), P1);
+        moveHistory = new ArrayList<>();
+        gameBoard = fillGameBoard();
     }
 
-    public ConcretePiece[][] newGameboard() {
-        int cnt = 1;
-        int cnta = 1;
-        board = new ConcretePiece[11][11];
-        board[5][5] = kings;
-        kings.setNumber(7);
+    public ConcretePiece[][] fillGameBoard() {
+        int countA = 1;
+        int countB = 1;
+        gameBoard = new ConcretePiece[11][11];
+        gameBoard[5][5] = theKing;
+        theKing.setNumber(7);
         for (int i = 0; i < 11; i++) {
             for (int j = 0; j < 11; j++) {
                 if (i == 0 || i == 10) {
                     if (j > 2 && j < 8) {
                         if (i == 10) {
                             if (j == 3) {
-                                cnt = 8;
+                                countA = 8;
                             }
                             if (j == 4) {
-                                cnt = 10;
+                                countA = 10;
                             }
                             if (j == 5) {
-                                cnt = 14;
+                                countA = 14;
                             }
                             if (j == 6) {
-                                cnt = 16;
+                                countA = 16;
                             }
                             if (j == 7) {
-                                cnt = 18;
+                                countA = 18;
                             }
                         }
                         if (i == 0) {
                             if (j == 3) {
-                                cnt = 7;
+                                countA = 7;
                             }
                             if (j == 4) {
-                                cnt = 9;
+                                countA = 9;
                             }
                             if (j == 5) {
-                                cnt = 11;
+                                countA = 11;
                             }
                             if (j == 6) {
-                                cnt = 15;
+                                countA = 15;
                             }
                             if (j == 7) {
-                                cnt = 17;
+                                countA = 17;
                             }
                         }
-                        Pawn a = new Pawn(new Position(i, j), player2);
-                        this.board[j][i] = a;
-                        a.setNumber(cnt);
+                        Pawn a = new Pawn(new Position(i, j), P2);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countA);
                         a.moved(new Position(i, j));
-                        Attacker[cnt] = a;
+                        attacker[countA] = a;
                     }
                 }
                 if (i == 1 || i == 9) {
                     if (j == 5) {
                         if (i == 1) {
-                            cnt = 12;
+                            countA = 12;
                         }
                         if (i == 9) {
-                            cnt = 13;
+                            countA = 13;
                         }
-                        Pawn a = new Pawn(new Position(i, j), player2);
-                        this.board[j][i] = a;
-                        a.setNumber(cnt);
+                        Pawn a = new Pawn(new Position(i, j), P2);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countA);
                         a.moved(new Position(i, j));
-                        Attacker[cnt] = a;
+                        attacker[countA] = a;
                     }
                 }
                 if (i == 3 || i == 7) {
                     if (j == 5) {
                         if (i == 3) {
-                            cnta = 5;
+                            countB = 5;
                         }
                         if (i == 7) {
-                            cnta = 9;
+                            countB = 9;
                         }
-                        Pawn a = new Pawn(new Position(i, j), player1);
-                        this.board[j][i] = a;
-                        a.setNumber(cnta);
+                        Pawn a = new Pawn(new Position(i, j), P1);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countB);
                         a.moved(new Position(i, j));
-                        Defender[cnta] = a;
+                        defender[countB] = a;
                     }
                     if (j == 0 || j == 10) {
                         if (i == 3) {
                             if (j == 0) {
-                                cnt = 1;
+                                countA = 1;
                             }
                             if (j == 10) {
-                                cnt = 20;
+                                countA = 20;
                             }
                         }
                         if (i == 7) {
                             if (j == 0) {
-                                cnt = 5;
+                                countA = 5;
                             }
                             if (j == 10) {
-                                cnt = 24;
+                                countA = 24;
                             }
                         }
-                        Pawn a = new Pawn(new Position(i, j), player2);
-                        this.board[j][i] = a;
-                        a.setNumber(cnt);
+                        Pawn a = new Pawn(new Position(i, j), P2);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countA);
                         a.moved(new Position(i, j));
-                        Attacker[cnt] = a;
+                        attacker[countA] = a;
                     }
                 }
                 if (i == 4 || i == 6) {
                     if (j == 0 || j == 10) {
                         if (j == 10) {
                             if (i == 4) {
-                                cnt = 21;
+                                countA = 21;
                             }
                             if (i == 6) {
-                                cnt = 23;
+                                countA = 23;
                             }
                         }
                         if (j == 0) {
                             if (i == 4) {
-                                cnt = 2;
+                                countA = 2;
                             }
                             if (i == 6) {
-                                cnt = 4;
+                                countA = 4;
                             }
                         }
-                        Pawn a = new Pawn(new Position(i, j), player2);
-                        this.board[j][i] = a;
-                        a.setNumber(cnt);
+                        Pawn a = new Pawn(new Position(i, j), P2);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countA);
                         a.moved(new Position(i, j));
-                        Attacker[cnt] = a;
+                        attacker[countA] = a;
                     }
                     if (j > 3 && j < 7) {
                         if (j == 4) {
                             if (i == 4) {
-                                cnta = 2;
+                                countB = 2;
                             }
                             if (i == 6) {
-                                cnta = 4;
+                                countB = 4;
                             }
                         }
                         if (j == 5) {
                             if (i == 6) {
-                                cnta = 8;
+                                countB = 8;
                             }
                             if (i == 4) {
-                                cnta = 6;
+                                countB = 6;
                             }
                         }
                         if (j == 6) {
                             if (i == 4) {
-                                cnta = 10;
+                                countB = 10;
                             }
                             if (i == 6) {
-                                cnta = 12;
+                                countB = 12;
                             }
                         }
-                        Pawn a = new Pawn(new Position(i, j), player1);
-                        this.board[j][i] = a;
-                        a.setNumber(cnta);
+                        Pawn a = new Pawn(new Position(i, j), P1);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countB);
                         a.moved(new Position(i, j));
-                        Defender[cnta] = a;
+                        defender[countB] = a;
                     }
                 }
                 if (i == 5) {
                     if (j < 2 || j > 8) {
                         if (j == 1) {
-                            cnt = 6;
+                            countA = 6;
                         }
                         if (j == 0) {
-                            cnt = 3;
+                            countA = 3;
                         }
                         if (j == 9) {
-                            cnt = 19;
+                            countA = 19;
                         }
                         if (j == 10) {
-                            cnt = 22;
+                            countA = 22;
                         }
-                        Pawn a = new Pawn(new Position(i, j), player2);
-                        this.board[j][i] = a;
-                        a.setNumber(cnt);
+                        Pawn a = new Pawn(new Position(i, j), P2);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countA);
                         a.moved(new Position(i, j));
-                        Attacker[cnt] = a;
+                        attacker[countA] = a;
                     }
                     if (j > 2 && j < 8 && j != 5) {
                         if (j == 3) {
-                            cnta = 1;
+                            countB = 1;
                         }
                         if (j == 4) {
-                            cnta = 3;
+                            countB = 3;
                         }
                         if (j == 6) {
-                            cnta = 11;
+                            countB = 11;
                         }
                         if (j == 7) {
-                            cnta = 13;
+                            countB = 13;
                         }
-                        Pawn a = new Pawn(new Position(i, j), player1);
-                        this.board[j][i] = a;
-                        a.setNumber(cnta);
+                        Pawn a = new Pawn(new Position(i, j), P1);
+                        this.gameBoard[j][i] = a;
+                        a.setPawnNumber(countB);
                         a.moved(new Position(i, j));
-                        Defender[cnta] = a;
+                        defender[countB] = a;
                     }
                 }
             }
         }
         int cnt1 = 0;
         int cnt2 = 0;
-        for (Pawn a : Attacker) {
+        for (Pawn a : attacker) {
             if (a != null) {
                 cnt1++;
             }
         }
-        for (Pawn a : Defender) {
+        for (Pawn a : defender) {
             if (a != null) {
                 cnt2++;
             }
@@ -244,21 +243,21 @@ public class GameLogic implements PlayableLogic {
         Pawn[] newdefender = new Pawn[cnt2];
         cnt1 = 0;
         cnt2 = 0;
-        for (Pawn a : Attacker) {
+        for (Pawn a : attacker) {
             if (a != null) {
                 newattacker[cnt1] = a;
                 cnt1++;
             }
         }
-        for (Pawn a : Defender) {
+        for (Pawn a : defender) {
             if (a != null) {
                 newdefender[cnt2] = a;
                 cnt2++;
             }
         }
-        Attacker = newattacker;
-        Defender = newdefender;
-        return board;
+        attacker = newattacker;
+        defender = newdefender;
+        return gameBoard;
     }
 
     @Override
@@ -269,125 +268,125 @@ public class GameLogic implements PlayableLogic {
             }
         }
         if (isSecondPlayerTurn()) {
-            if (board[a.Getrow()][a.Getcol()].getOwner() == player1) {
+            if (gameBoard[a.Getrow()][a.Getcol()].getOwner() == P1) {
                 return false;
             }
         }
         if (!isSecondPlayerTurn()) {
-            if (board[a.Getrow()][a.Getcol()].getOwner() == player2) {
+            if (gameBoard[a.Getrow()][a.Getcol()].getOwner() == P2) {
                 return false;
             }
         }
 
         if (a.Getrow() == b.Getrow() && b.Getcol() > a.Getcol()) {
             for (int i = a.Getcol() + 1; i < b.Getcol(); i++) {
-                if (this.board[a.Getrow()][i] != null) {
+                if (this.gameBoard[a.Getrow()][i] != null) {
                     return false;
                 }
             }
         }
         if (a.Getrow() == b.Getrow() && b.Getcol() < a.Getcol()) {
             for (int i = b.Getcol(); i < a.Getcol(); i++) {
-                if (this.board[a.Getrow()][i] != null) {
+                if (this.gameBoard[a.Getrow()][i] != null) {
                     return false;
                 }
             }
         }
         if (a.Getcol() == b.Getcol() && b.Getrow() > a.Getrow()) {
             for (int i = a.Getrow() + 1; i <= b.Getrow(); i++) {
-                if (this.board[i][a.Getcol()] != null) {
+                if (this.gameBoard[i][a.Getcol()] != null) {
                     return false;
                 }
             }
         }
         if (a.Getcol() == b.Getcol() && b.Getrow() < a.Getrow()) {
             for (int i = b.Getrow(); i < a.Getrow(); i++) {
-                if (this.board[i][a.Getcol()] != null) {
+                if (this.gameBoard[i][a.Getcol()] != null) {
                     return false;
                 }
             }
         }
 
         if (Objects.equals(getPieceAtPosition(a).getType(), "♔")) {
-            kings.Setpos(b);
-            board[a.Getrow()][a.Getcol()] = null;
-            board[b.Getrow()][b.Getcol()] = kings;
-            nummoves++;
-            MoveH.add(a);
-            MoveH.add(b);
-            kings.Moved(b);
+            theKing.Setpos(b);
+            gameBoard[a.Getrow()][a.Getcol()] = null;
+            gameBoard[b.Getrow()][b.Getcol()] = theKing;
+            numOfMoves++;
+            moveHistory.add(a);
+            moveHistory.add(b);
+            theKing.Moved(b);
             return true;
         } else {
-            boolean pl = board[a.Getrow()][a.Getcol()].getOwner().isPlayerOne();
+            boolean pl = gameBoard[a.Getrow()][a.Getcol()].getOwner().isPlayerOne();
             Pawn newp;
             if (pl) {
-                newp = new Pawn(b, player1);
-                for (Pawn pawn : Defender) {
-                    if (pawn != null && pawn.getPos().Getcol() == a.Getcol() && pawn.getPos().Getrow() == a.Getrow()) {
-                        pawn.setPos(b);
+                newp = new Pawn(b, P1);
+                for (Pawn pawn : defender) {
+                    if (pawn != null && pawn.getPawnPosition().Getcol() == a.Getcol() && pawn.getPawnPosition().Getrow() == a.Getrow()) {
+                        pawn.setPawnPosition(b);
                     }
                 }
             } else {
-                newp = new Pawn(b, player2);
-                for (Pawn pawn : Attacker) {
-                    if (pawn != null && pawn.getPos().Getcol() == a.Getcol() && pawn.getPos().Getrow() == a.Getrow()) {
-                        pawn.setPos(b);
+                newp = new Pawn(b, P2);
+                for (Pawn pawn : attacker) {
+                    if (pawn != null && pawn.getPawnPosition().Getcol() == a.Getcol() && pawn.getPawnPosition().Getrow() == a.Getrow()) {
+                        pawn.setPawnPosition(b);
                     }
                 }
             }
-            board[b.Getrow()][b.Getcol()] = newp;
-            this.board[a.Getrow()][a.Getcol()] = null;
-            MoveH.add(a);
-            MoveH.add(b);
+            gameBoard[b.Getrow()][b.Getcol()] = newp;
+            this.gameBoard[a.Getrow()][a.Getcol()] = null;
+            moveHistory.add(a);
+            moveHistory.add(b);
         }
-        nummoves++;
+        numOfMoves++;
         //checking for kills
-        checkkills(b);
+        checkForKills(b);
         if (isGameFinished()) {
             printAllData();
         }
         return true;
     }
 
-    public void checkkills(Position b) {
+    public void checkForKills(Position b) {
         for (int i = 0; i < 11; i++)
             for (int j = 0; j < 11; j++) {
                 if (j == 0 || j == 10 || i == 0 || i == 10) {
                     if (j == 0) {
-                        if (board[j][i] != null && Objects.equals(board[j][i].getType(), "♔") && board[j + 1][i] != null && board[j][i + 1] != null && board[j][i - 1] != null) {
-                            if (board[j + 1][i].getOwner() == player2 && board[j][i + 1].getOwner() == player2 && board[j][i - 1].getOwner() == player2) {
-                                for (Pawn pawn : Attacker) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
+                        if (gameBoard[j][i] != null && Objects.equals(gameBoard[j][i].getType(), "♔") && gameBoard[j + 1][i] != null && gameBoard[j][i + 1] != null && gameBoard[j][i - 1] != null) {
+                            if (gameBoard[j + 1][i].getOwner() == P2 && gameBoard[j][i + 1].getOwner() == P2 && gameBoard[j][i - 1].getOwner() == P2) {
+                                for (Pawn pawn : attacker) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
                                         pawn.killed();
-                                        kings.setMovekilled(nummoves);
-                                        board[j][i] = null;
-                                        kings.Pos = null;
+                                        theKing.setMovekilled(numOfMoves);
+                                        gameBoard[j][i] = null;
+                                        theKing.kingPosition = null;
                                     }
                                 }
                             }
                         }
-                        if (board[j][i] != null && board[j + 1][i] != null && !Objects.equals(board[j][i].getType(), "♔") && !Objects.equals(board[j + 1][i].getType(), "♔")) {
-                            if (board[j][i].getOwner() != board[j + 1][i].getOwner()) {
-                                if (getPieceAtPosition(b).getOwner() == player2) {
-                                    for (Pawn pawn : Attacker) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Defender) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == i && pawn1.getPos().Getcol() == j) {
+                        if (gameBoard[j][i] != null && gameBoard[j + 1][i] != null && !Objects.equals(gameBoard[j][i].getType(), "♔") && !Objects.equals(gameBoard[j + 1][i].getType(), "♔")) {
+                            if (gameBoard[j][i].getOwner() != gameBoard[j + 1][i].getOwner()) {
+                                if (getPieceAtPosition(b).getOwner() == P2) {
+                                    for (Pawn pawn : attacker) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : defender) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == i && pawn1.getPawnPosition().Getcol() == j) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
                                     }
                                 } else {
-                                    for (Pawn pawn : Defender) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Attacker) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                                    for (Pawn pawn : defender) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : attacker) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
@@ -397,40 +396,40 @@ public class GameLogic implements PlayableLogic {
                         }
                     }
                     if (j == 10) {
-                        if (board[j][i] != null && Objects.equals(board[j][i].getType(), "♔")) {
-                            if (board[j][i - 1] != null && board[j - 1][i] != null && board[j][i + 1] != null && board[j - 1][i].getOwner() == player2 && board[j][i + 1].getOwner() == player2 && board[j][i - 1].getOwner() == player2) {
-                                for (Pawn pawn : Attacker) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
+                        if (gameBoard[j][i] != null && Objects.equals(gameBoard[j][i].getType(), "♔")) {
+                            if (gameBoard[j][i - 1] != null && gameBoard[j - 1][i] != null && gameBoard[j][i + 1] != null && gameBoard[j - 1][i].getOwner() == P2 && gameBoard[j][i + 1].getOwner() == P2 && gameBoard[j][i - 1].getOwner() == P2) {
+                                for (Pawn pawn : attacker) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
                                         pawn.killed();
-                                        board[j][i] = null;
-                                        kings.setMovekilled(nummoves);
-                                        kings.Pos = null;
+                                        gameBoard[j][i] = null;
+                                        theKing.setMovekilled(numOfMoves);
+                                        theKing.kingPosition = null;
                                     }
                                 }
                             }
                         }
-                        if (board[j][i] != null && board[j - 1][i] != null && !Objects.equals(board[j][i].getType(), "♔")) {
-                            if (board[j][i].getOwner() != board[j - 1][i].getOwner() && !Objects.equals(board[j - 1][i].getType(), "♔")) {
-                                if (getPieceAtPosition(b).getOwner() == player2) {
-                                    for (Pawn pawn : Attacker) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Defender) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == i && pawn1.getPos().Getcol() == j) {
+                        if (gameBoard[j][i] != null && gameBoard[j - 1][i] != null && !Objects.equals(gameBoard[j][i].getType(), "♔")) {
+                            if (gameBoard[j][i].getOwner() != gameBoard[j - 1][i].getOwner() && !Objects.equals(gameBoard[j - 1][i].getType(), "♔")) {
+                                if (getPieceAtPosition(b).getOwner() == P2) {
+                                    for (Pawn pawn : attacker) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : defender) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == i && pawn1.getPawnPosition().Getcol() == j) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
                                     }
                                 } else {
-                                    for (Pawn pawn : Defender) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Attacker) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                                    for (Pawn pawn : defender) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : attacker) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
@@ -440,41 +439,41 @@ public class GameLogic implements PlayableLogic {
                         }
                     }
                     if (i == 0) {
-                        if (board[j][i] != null && Objects.equals(board[j][i].getType(), "♔")) {
-                            if (board[j - 1][i] != null && board[j][i + 1] != null && board[j + 1][i] != null &&
-                                    board[j - 1][i].getOwner() == player2 && board[j][i + 1].getOwner() == player2 && board[j + 1][i].getOwner() == player2) {
-                                for (Pawn pawn : Attacker) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                        board[j][i] = null;
-                                        kings.Setpos(null);
-                                        kings.setMovekilled(nummoves);
-                                        board[j][i] = null;
+                        if (gameBoard[j][i] != null && Objects.equals(gameBoard[j][i].getType(), "♔")) {
+                            if (gameBoard[j - 1][i] != null && gameBoard[j][i + 1] != null && gameBoard[j + 1][i] != null &&
+                                    gameBoard[j - 1][i].getOwner() == P2 && gameBoard[j][i + 1].getOwner() == P2 && gameBoard[j + 1][i].getOwner() == P2) {
+                                for (Pawn pawn : attacker) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                        gameBoard[j][i] = null;
+                                        theKing.Setpos(null);
+                                        theKing.setMovekilled(numOfMoves);
+                                        gameBoard[j][i] = null;
                                     }
                                 }
                             }
                         }
-                        if (board[j][i] != null && board[j][i + 1] != null && !Objects.equals(board[j][i + 1].getType(), "♔")) {
-                            if (board[j][i].getOwner() != board[j][i + 1].getOwner() && !Objects.equals(board[j][i].getType(), "♔")) {
-                                if (getPieceAtPosition(b).getOwner() == player2) {
-                                    for (Pawn pawn : Attacker) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn2 : Defender) {
-                                                if (pawn2 != null && pawn2.getPos().Getrow() == i && pawn2.getPos().Getcol() == j) {
+                        if (gameBoard[j][i] != null && gameBoard[j][i + 1] != null && !Objects.equals(gameBoard[j][i + 1].getType(), "♔")) {
+                            if (gameBoard[j][i].getOwner() != gameBoard[j][i + 1].getOwner() && !Objects.equals(gameBoard[j][i].getType(), "♔")) {
+                                if (getPieceAtPosition(b).getOwner() == P2) {
+                                    for (Pawn pawn : attacker) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn2 : defender) {
+                                                if (pawn2 != null && pawn2.getPawnPosition().Getrow() == i && pawn2.getPawnPosition().Getcol() == j) {
                                                     pawn.killed();
-                                                    pawn.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
                                     }
                                 } else {
-                                    for (Pawn pawn : Defender) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Attacker) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                                    for (Pawn pawn : defender) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : attacker) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
@@ -484,39 +483,39 @@ public class GameLogic implements PlayableLogic {
                         }
                     }
                     if (i == 10) {
-                        if (board[j][i] != null && Objects.equals(board[j][i].getType(), "♔") && board[j - 1][i] != null && board[j][i] != null) {
-                            if (board[j - 1][i].getOwner() == player2 && board[j][i - 1].getOwner() == player2 && board[j + 1][i].getOwner() == player2) {
-                                for (Pawn pawn : Attacker) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                        kings.Setpos(null);
-                                        kings.setMovekilled(nummoves);
-                                        board[j][i] = null;
+                        if (gameBoard[j][i] != null && Objects.equals(gameBoard[j][i].getType(), "♔") && gameBoard[j - 1][i] != null && gameBoard[j][i] != null) {
+                            if (gameBoard[j - 1][i].getOwner() == P2 && gameBoard[j][i - 1].getOwner() == P2 && gameBoard[j + 1][i].getOwner() == P2) {
+                                for (Pawn pawn : attacker) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                        theKing.Setpos(null);
+                                        theKing.setMovekilled(numOfMoves);
+                                        gameBoard[j][i] = null;
                                     }
                                 }
                             }
                         } else {
-                            if (board[j][i] != null && !Objects.equals(board[j][i].getType(), "♔") && board[j][i - 1] != null && !Objects.equals(board[j][i - 1].getType(), "♔")
-                                    && board[j][i].getOwner() != board[j][i - 1].getOwner()) {
-                                if (getPieceAtPosition(b).getOwner() == player1) {
-                                    for (Pawn pawn : Defender) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Attacker) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                            if (gameBoard[j][i] != null && !Objects.equals(gameBoard[j][i].getType(), "♔") && gameBoard[j][i - 1] != null && !Objects.equals(gameBoard[j][i - 1].getType(), "♔")
+                                    && gameBoard[j][i].getOwner() != gameBoard[j][i - 1].getOwner()) {
+                                if (getPieceAtPosition(b).getOwner() == P1) {
+                                    for (Pawn pawn : defender) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : attacker) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.Movekilled = nummoves;
-                                                    board[j][i] = null;
+                                                    pawn1.Movekilled = numOfMoves;
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
                                     }
                                 } else {
-                                    for (Pawn pawn : Attacker) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Defender) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == i && pawn1.getPos().Getcol() == j && pawn1.getPos().Getrow() == pawn.getPos().Getrow()) {
+                                    for (Pawn pawn : attacker) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : defender) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == i && pawn1.getPawnPosition().Getcol() == j && pawn1.getPawnPosition().Getrow() == pawn.getPawnPosition().Getrow()) {
                                                     pawn.killed();
-                                                    pawn1.Movekilled = nummoves;
-                                                    board[j][i] = null;
+                                                    pawn1.Movekilled = numOfMoves;
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
@@ -526,41 +525,42 @@ public class GameLogic implements PlayableLogic {
                         }
                     }
                 } else {
-                    if (board[j][i] != null && board[j][i].getType().equals("♔")) {
-                        if (board[j][i - 1] != null && board[j - 1][i] != null && board[j + 1][i] != null && board[j][i + 1] != null &&
-                                board[j - 1][i].getOwner() == player2 && board[j + 1][i].getOwner() == player2 && board[j][i + 1].getOwner() == player2 && board[j][i - 1].getOwner() == player2) {
-                            for (Pawn a : Attacker) {
-                                if (a != null && a.getPos().Getrow() == b.Getrow() && a.getPos().Getcol() == b.Getcol()) {
-                                    kings.Setpos(null);
-                                    kings.setMovekilled(nummoves);
-                                    board[j][i] = null;
+                    if (gameBoard[j][i] != null && gameBoard[j][i].getType().equals("♔")) {
+                        if (gameBoard[j][i - 1] != null && gameBoard[j - 1][i] != null && gameBoard[j + 1][i] != null && gameBoard[j][i + 1] != null &&
+                                gameBoard[j - 1][i].getOwner() == P2 && gameBoard[j + 1][i].getOwner() == P2 &&
+                                gameBoard[j][i + 1].getOwner() == P2 && gameBoard[j][i - 1].getOwner() == P2) {
+                            for (Pawn a : attacker) {
+                                if (a != null && a.getPawnPosition().Getrow() == b.Getrow() && a.getPawnPosition().Getcol() == b.Getcol()) {
+                                    theKing.Setpos(null);
+                                    theKing.setMovekilled(numOfMoves);
+                                    gameBoard[j][i] = null;
                                 }
                             }
                         }
                     }
-                    if (board[j][i] != null && board[j][i - 1] != null && board[j][i + 1] != null && !Objects.equals(board[j][i - 1].getType(), "♔")
-                            && !Objects.equals(board[j][i + 1].getType(), "♔") && !Objects.equals(board[j][i].getType(), "♔")) {
-                        if (board[j][i].getOwner() != board[j][i - 1].getOwner() && board[j][i].getOwner() != board[j][i + 1].getOwner()) {
-                            if (board[j][i].getOwner() == player1) {
-                                for (Pawn pawn : Attacker) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                        for (Pawn pawn1 : Defender) {
-                                            if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                    if (gameBoard[j][i] != null && gameBoard[j][i - 1] != null && gameBoard[j][i + 1] != null && !Objects.equals(gameBoard[j][i - 1].getType(), "♔")
+                            && !Objects.equals(gameBoard[j][i + 1].getType(), "♔") && !Objects.equals(gameBoard[j][i].getType(), "♔")) {
+                        if (gameBoard[j][i].getOwner() != gameBoard[j][i - 1].getOwner() && gameBoard[j][i].getOwner() != gameBoard[j][i + 1].getOwner()) {
+                            if (gameBoard[j][i].getOwner() == P1) {
+                                for (Pawn pawn : attacker) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                        for (Pawn pawn1 : defender) {
+                                            if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                 pawn.killed();
-                                                pawn1.setMovekilled(nummoves);
-                                                board[j][i] = null;
+                                                pawn1.setMovekilled(numOfMoves);
+                                                gameBoard[j][i] = null;
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                for (Pawn pawn : Defender) {
-                                    if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                        for (Pawn pawn1 : Attacker) {
-                                            if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                                for (Pawn pawn : defender) {
+                                    if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                        for (Pawn pawn1 : attacker) {
+                                            if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                 pawn.killed();
-                                                pawn1.setMovekilled(nummoves);
-                                                board[j][i] = null;
+                                                pawn1.setMovekilled(numOfMoves);
+                                                gameBoard[j][i] = null;
                                             }
                                         }
                                     }
@@ -568,29 +568,29 @@ public class GameLogic implements PlayableLogic {
                             }
                         }
                     } else {
-                        if (board[j][i] != null && board[j - 1][i] != null && !Objects.equals(board[j][i].getType(), "♔") && board[j + 1][i] != null
-                                && !Objects.equals(board[j - 1][i].getType(), "♔") && !Objects.equals(board[j + 1][i].getType(), "♔")) {
-                            if (board[j][i].getOwner() != board[j - 1][i].getOwner() && board[j][i].getOwner() != board[j + 1][i].getOwner()) {
-                                if (getPieceAtPosition(b).getOwner() == player2) {
-                                    for (Pawn pawn : Attacker) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Defender) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                        if (gameBoard[j][i] != null && gameBoard[j - 1][i] != null && !Objects.equals(gameBoard[j][i].getType(), "♔") && gameBoard[j + 1][i] != null
+                                && !Objects.equals(gameBoard[j - 1][i].getType(), "♔") && !Objects.equals(gameBoard[j + 1][i].getType(), "♔")) {
+                            if (gameBoard[j][i].getOwner() != gameBoard[j - 1][i].getOwner() && gameBoard[j][i].getOwner() != gameBoard[j + 1][i].getOwner()) {
+                                if (getPieceAtPosition(b).getOwner() == P2) {
+                                    for (Pawn pawn : attacker) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : defender) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
                                     }
                                 } else {
-                                    for (Pawn pawn : Defender) {
-                                        if (pawn != null && pawn.getPos().Getcol() == b.Getcol() && pawn.getPos().Getrow() == b.Getrow()) {
-                                            for (Pawn pawn1 : Attacker) {
-                                                if (pawn1 != null && pawn1.getPos().Getrow() == j && pawn1.getPos().Getcol() == i) {
+                                    for (Pawn pawn : defender) {
+                                        if (pawn != null && pawn.getPawnPosition().Getcol() == b.Getcol() && pawn.getPawnPosition().Getrow() == b.Getrow()) {
+                                            for (Pawn pawn1 : attacker) {
+                                                if (pawn1 != null && pawn1.getPawnPosition().Getrow() == j && pawn1.getPawnPosition().Getcol() == i) {
                                                     pawn.killed();
-                                                    pawn1.setMovekilled(nummoves);
-                                                    board[j][i] = null;
+                                                    pawn1.setMovekilled(numOfMoves);
+                                                    gameBoard[j][i] = null;
                                                 }
                                             }
                                         }
@@ -605,37 +605,37 @@ public class GameLogic implements PlayableLogic {
 
     @Override
     public ConcretePiece getPieceAtPosition(Position position) {
-        return this.board[position.Getrow()][position.Getcol()];
+        return this.gameBoard[position.Getrow()][position.Getcol()];
     }
 
     public Player getFirstPlayer() {
-        return this.player1;
+        return this.P1;
     }
 
     public Player getSecondPlayer() {
-        return this.player2;
+        return this.P2;
     }
 
 
     public boolean isGameFinished() {
-        Position kingp = kings.Getpos();
-        if (kingp == null) {
-            player2.won();
-            player2.setlastwin();
+        Position kingPosition = theKing.Getpos();
+        if (kingPosition == null) {
+            P2.won();
+            P2.setlastwin();
             return true;
         }
-        if (kingp.Getrow() == 10 && (kingp.Getcol() == 0 || kingp.Getcol() == 10)) {
-            player1.won();
-            player1.setlastwin();
+        if (kingPosition.Getrow() == 10 && (kingPosition.Getcol() == 0 || kingPosition.Getcol() == 10)) {
+            P1.won();
+            P1.setlastwin();
             return true;
         }
-        if (kingp.Getrow() == 0 && (kingp.Getcol() == 0 || kingp.Getcol() == 10)) {
-            player1.won();
-            player1.setlastwin();
+        if (kingPosition.Getrow() == 0 && (kingPosition.Getcol() == 0 || kingPosition.Getcol() == 10)) {
+            P1.won();
+            P1.setlastwin();
             return true;
         }
         int cnt = 0;
-        for (Pawn a : Attacker) {
+        for (Pawn a : attacker) {
             if (a.Movekilled == 0) {
                 return false;
             }
@@ -645,7 +645,7 @@ public class GameLogic implements PlayableLogic {
             return true;
         }
         cnt = 0;
-        for (Pawn a : Defender) {
+        for (Pawn a : defender) {
             if (a.Movekilled == 0) {
                 return false;
             }
@@ -659,68 +659,68 @@ public class GameLogic implements PlayableLogic {
 
 
     public boolean isSecondPlayerTurn() {
-        return this.nummoves % 2 == 0;
+        return this.numOfMoves % 2 == 0;
     }
 
     @Override
     public void reset() {
-        Attacker = new Pawn[25];
-        Defender = new Pawn[14];
+        attacker = new Pawn[25];
+        defender = new Pawn[14];
         new GameLogic();
-        board = newGameboard();
-        nummoves = 0;
+        gameBoard = fillGameBoard();
+        numOfMoves = 0;
     }
 
     @Override
     public void undoLastMove() {
-        if (nummoves > 0) {
-            Position lastPos = MoveH.get(MoveH.size() - 1);
-            Position beforeLastPos = MoveH.get(MoveH.size() - 2);
+        if (numOfMoves > 0) {
+            Position lastPos = moveHistory.get(moveHistory.size() - 1);
+            Position beforeLastPos = moveHistory.get(moveHistory.size() - 2);
             Pawn newPawn;
             Pawn retPawn;
             for (int i = 0; i < 2; i++) {
-                for (Pawn pawn : Attacker) {
-                    if (pawn != null && pawn.Movekilled == nummoves) {
+                for (Pawn pawn : attacker) {
+                    if (pawn != null && pawn.Movekilled == numOfMoves) {
                         retPawn = pawn;
-                        board[pawn.getPos().Getrow()][pawn.getPos().Getcol()] = retPawn;
+                        gameBoard[pawn.getPawnPosition().Getrow()][pawn.getPawnPosition().Getcol()] = retPawn;
                         pawn.setMovekilled(0);
                     }
                 }
-                for (Pawn pawn : Defender) {
-                    if (pawn != null && pawn.Movekilled == nummoves) {
+                for (Pawn pawn : defender) {
+                    if (pawn != null && pawn.Movekilled == numOfMoves) {
                         retPawn = pawn;
-                        board[pawn.getPos().Getrow()][pawn.getPos().Getcol()] = retPawn;
+                        gameBoard[pawn.getPawnPosition().Getrow()][pawn.getPawnPosition().Getcol()] = retPawn;
                         pawn.setMovekilled(0);
                     }
                 }
             }
             if (isSecondPlayerTurn()) {
-                newPawn = new Pawn(beforeLastPos, player1);
+                newPawn = new Pawn(beforeLastPos, P1);
             } else {
-                newPawn = new Pawn(beforeLastPos, player2);
+                newPawn = new Pawn(beforeLastPos, P2);
             }
-            board[beforeLastPos.Getrow()][beforeLastPos.Getcol()] = newPawn;
-            board[lastPos.Getrow()][lastPos.Getcol()] = null;
-            MoveH.remove(MoveH.size() - 1);
-            MoveH.remove(MoveH.size() - 1);
-            nummoves--;
+            gameBoard[beforeLastPos.Getrow()][beforeLastPos.Getcol()] = newPawn;
+            gameBoard[lastPos.Getrow()][lastPos.Getcol()] = null;
+            moveHistory.remove(moveHistory.size() - 1);
+            moveHistory.remove(moveHistory.size() - 1);
+            numOfMoves--;
         }
     }
 
     @Override
     public int getBoardSize() {
-        return board[0].length;
+        return gameBoard[0].length;
     }
 
     private void printAllData() {
         printPieceData();
-        line();
+        starLine();
         printEatsData();
-        line();
+        starLine();
         printSumMovesData();
-        line();
+        starLine();
         printPositionData();
-        line();
+        starLine();
     }
 
     private void printPieceData() {
@@ -731,10 +731,10 @@ public class GameLogic implements PlayableLogic {
             if (o2 == null) {
                 return 1;
             }
-            if (o1.moveH.size() > o2.moveH.size()) {
+            if (o1.pawnMoveHistory.size() > o2.pawnMoveHistory.size()) {
                 return 1;
             }
-            if (o1.moveH.size() < o2.moveH.size()) {
+            if (o1.pawnMoveHistory.size() < o2.pawnMoveHistory.size()) {
                 return -1;
             } else {
                 if (o1.GetNumber() > o2.GetNumber()) {
@@ -744,9 +744,9 @@ public class GameLogic implements PlayableLogic {
             }
         }
         );
-        Pawn kingdata = new Pawn(new Position(5, 5), player1);
+        Pawn kingdata = new Pawn(new Position(5, 5), P1);
         int cnt = 1;
-        for (Position a : kings.Moveh) {
+        for (Position a : theKing.KingMoveHistory) {
             if (cnt == 1) {
                 cnt = 0;
                 kingdata.moved(new Position(5, 5));
@@ -754,20 +754,20 @@ public class GameLogic implements PlayableLogic {
             }
             kingdata.moved(a);
         }
-        kingdata.setNumber(7);
-        Pawn[] newDef = new Pawn[Defender.length + 1];
-        for (int i = 0; i <= Defender.length; i++) {
-            if (i == Defender.length) {
+        kingdata.setPawnNumber(7);
+        Pawn[] newDef = new Pawn[defender.length + 1];
+        for (int i = 0; i <= defender.length; i++) {
+            if (i == defender.length) {
                 newDef[i] = kingdata;
                 break;
             }
-            if (Defender[i] != null) {
-                newDef[i] = Defender[i];
+            if (defender[i] != null) {
+                newDef[i] = defender[i];
             }
 
 
         }
-        Arrays.sort(Attacker, pawnComparator);
+        Arrays.sort(attacker, pawnComparator);
         Arrays.sort(newDef, pawnComparator);
 
         Pawn[] winner;
@@ -775,7 +775,7 @@ public class GameLogic implements PlayableLogic {
 
         if (isSecondPlayerTurn()) {
             winner = newDef;
-            loser = Attacker;
+            loser = attacker;
             for (Pawn pawn : winner) {
                 if (pawn != null && pawn.Summoves() >= 1) {
                     if (pawn.GetNumber() == 7) {
@@ -783,11 +783,11 @@ public class GameLogic implements PlayableLogic {
                     } else {
                         System.out.print("D" + pawn.GetNumber() + ": [");
                     }
-                    for (int i = 0; i < pawn.moveH.size(); i++) {
-                        if (i != pawn.moveH.size() - 1) {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + "), ");
+                    for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                        if (i != pawn.pawnMoveHistory.size() - 1) {
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + "), ");
                         } else {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + ")");
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + ")");
                         }
                     }
                     System.out.println("]");
@@ -796,27 +796,27 @@ public class GameLogic implements PlayableLogic {
             for (Pawn pawn : loser) {
                 if (pawn != null && pawn.Summoves() >= 1) {
                     System.out.print("A" + pawn.GetNumber() + ": [");
-                    for (int i = 0; i < pawn.moveH.size(); i++) {
-                        if (i != pawn.moveH.size() - 1) {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + "), ");
+                    for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                        if (i != pawn.pawnMoveHistory.size() - 1) {
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + "), ");
                         } else {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + ")");
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + ")");
                         }
                     }
                     System.out.println("]");
                 }
             }
         } else {
-            winner = Attacker;
+            winner = attacker;
             loser = newDef;
             for (Pawn pawn : winner) {
                 if (pawn != null && pawn.Summoves() >= 1) {
                     System.out.print("A" + pawn.GetNumber() + ": [");
-                    for (int i = 0; i < pawn.moveH.size(); i++) {
-                        if (i != pawn.moveH.size() - 1) {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + "), ");
+                    for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                        if (i != pawn.pawnMoveHistory.size() - 1) {
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + "), ");
                         } else {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + ")");
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + ")");
                         }
                     }
                     System.out.println("]");
@@ -824,15 +824,15 @@ public class GameLogic implements PlayableLogic {
             }
             for (Pawn pawn : loser) {
                 if (pawn != null && pawn.Summoves() >= 1) {
-                    if (pawn.number == 7)
+                    if (pawn.pawnNumber == 7)
                         System.out.print("K" + pawn.GetNumber() + ": [");
                     else
                         System.out.print("D" + pawn.GetNumber() + ": [");
-                    for (int i = 0; i < pawn.moveH.size(); i++) {
-                        if (i != pawn.moveH.size() - 1) {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + "), ");
+                    for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                        if (i != pawn.pawnMoveHistory.size() - 1) {
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + "), ");
                         } else {
-                            System.out.print("(" + pawn.moveH.get(i).Getcol() + ", " + pawn.moveH.get(i).Getrow() + ")");
+                            System.out.print("(" + pawn.pawnMoveHistory.get(i).Getcol() + ", " + pawn.pawnMoveHistory.get(i).Getrow() + ")");
                         }
                     }
                     System.out.println("]");
@@ -850,37 +850,37 @@ public class GameLogic implements PlayableLogic {
             if (o2 == null) {
                 return 1;
             }
-            if (o2.getKills() > o1.getKills()) {
+            if (o2.getNumOfKills() > o1.getNumOfKills()) {
                 return 1;
             }
-            if (o1.getKills() > o2.getKills()) {
+            if (o1.getNumOfKills() > o2.getNumOfKills()) {
                 return -1;
             }
             return 0;
         };
 
-        Arrays.sort(Attacker, killsCompare);
-        Arrays.sort(Defender, killsCompare);
+        Arrays.sort(attacker, killsCompare);
+        Arrays.sort(defender, killsCompare);
 
         Pawn[] winner;
         Pawn[] loser;
 
         if (isSecondPlayerTurn()) {
-            winner = Defender;
-            loser = Attacker;
+            winner = defender;
+            loser = attacker;
         } else {
-            winner = Attacker;
-            loser = Defender;
+            winner = attacker;
+            loser = defender;
         }
 
         for (Pawn pawn : winner) {
-            if (pawn != null && pawn.getKills() >= 1) {
-                System.out.println("A" + pawn.GetNumber() + ": " + pawn.getKills() + " kills");
+            if (pawn != null && pawn.getNumOfKills() >= 1) {
+                System.out.println("A" + pawn.GetNumber() + ": " + pawn.getNumOfKills() + " kills");
             }
         }
         for (Pawn pawn : loser) {
-            if (pawn != null && pawn.getKills() >= 1) {
-                System.out.println("D" + pawn.GetNumber() + ": " + pawn.getKills() + " kills");
+            if (pawn != null && pawn.getNumOfKills() >= 1) {
+                System.out.println("D" + pawn.GetNumber() + ": " + pawn.getNumOfKills() + " kills");
             }
         }
     }
@@ -905,9 +905,9 @@ public class GameLogic implements PlayableLogic {
             }
             return Integer.compare(o2.Summoves(), o1.Summoves());
         };
-        Pawn kingdata = new Pawn(new Position(5, 5), player1);
+        Pawn kingdata = new Pawn(new Position(5, 5), P1);
         int cnt = 1;
-        for (Position a : kings.Moveh) {
+        for (Position a : theKing.KingMoveHistory) {
             if (cnt == 1) {
                 cnt = 0;
                 kingdata.moved(new Position(5, 5));
@@ -915,22 +915,22 @@ public class GameLogic implements PlayableLogic {
             }
             kingdata.moved(a);
         }
-        kingdata.setNumber(7);
+        kingdata.setPawnNumber(7);
 
-        Pawn[] newDef = new Pawn[Defender.length + 1];
-        for (int i = 0; i <= Defender.length; i++) {
-            if (i == Defender.length) {
+        Pawn[] newDef = new Pawn[defender.length + 1];
+        for (int i = 0; i <= defender.length; i++) {
+            if (i == defender.length) {
                 newDef[i] = kingdata;
                 continue;
             }
-            if (Defender[i] != null) {
-                newDef[i] = Defender[i];
+            if (defender[i] != null) {
+                newDef[i] = defender[i];
 
             }
         }
-        Pawn[] Allpawn = new Pawn[newDef.length + Attacker.length];
+        Pawn[] Allpawn = new Pawn[newDef.length + attacker.length];
         int cntpawn = 0;
-        for (Pawn a : Attacker) {
+        for (Pawn a : attacker) {
             Allpawn[cntpawn++] = a;
         }
         for (Pawn a : newDef) {
@@ -950,21 +950,11 @@ public class GameLogic implements PlayableLogic {
         }
 
     }
-
-    private void line() {
-        for (int i = 0; i < 75; i++) {
-            System.out.print("*");
-            if (i == 74) {
-                System.out.println("");
-            }
-        }
-    }
-
     private void printPositionData() {
         ArrayList<Position> finalsteps = new ArrayList<>();
         int[][] howManySteps = new int[11][11];
         boolean[][] isStepOver = new boolean[11][11];
-        for (Position a : kings.Moveh) {
+        for (Position a : theKing.KingMoveHistory) {
             for (int j = 0; j < isStepOver.length; j++) {
                 for (int k = 0; k < isStepOver.length; k++) {
                     isStepOver[j][k] = false;
@@ -975,7 +965,7 @@ public class GameLogic implements PlayableLogic {
                 isStepOver[a.Getrow()][a.Getcol()] = true;
             }
         }
-        for (Pawn pawn : Attacker) {
+        for (Pawn pawn : attacker) {
             if (pawn == null) {
                 continue;
             }
@@ -984,14 +974,14 @@ public class GameLogic implements PlayableLogic {
                     isStepOver[j][k] = false;
                 }
             }
-            for (int i = 0; i < pawn.moveH.size(); i++) {
-                if (!isStepOver[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()]) {
-                    howManySteps[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()]++;
-                    isStepOver[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()] = true;
+            for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                if (!isStepOver[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()]) {
+                    howManySteps[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()]++;
+                    isStepOver[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()] = true;
                 }
             }
         }
-        for (Pawn pawn : Defender) {
+        for (Pawn pawn : defender) {
             if (pawn == null) {
                 continue;
             }
@@ -1000,10 +990,10 @@ public class GameLogic implements PlayableLogic {
                     isStepOver[j][k] = false;
                 }
             }
-            for (int i = 0; i < pawn.moveH.size(); i++) {
-                if (!isStepOver[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()]) {
-                    howManySteps[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()]++;
-                    isStepOver[pawn.moveH.get(i).Getrow()][pawn.moveH.get(i).Getcol()] = true;
+            for (int i = 0; i < pawn.pawnMoveHistory.size(); i++) {
+                if (!isStepOver[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()]) {
+                    howManySteps[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()]++;
+                    isStepOver[pawn.pawnMoveHistory.get(i).Getrow()][pawn.pawnMoveHistory.get(i).Getcol()] = true;
                 }
             }
         }
@@ -1034,6 +1024,15 @@ public class GameLogic implements PlayableLogic {
 
         for (int i = 0; i < finalsteps.size(); i++) {
             System.out.println("(" + finalsteps.get(i).Getcol() + ", " + finalsteps.get(i).Getrow() + ")" + finalsteps.get(i).Getsteps() + " pieces");
+        }
+    }
+
+    private void starLine() {
+        for (int i = 0; i < 75; i++) {
+            System.out.print("*");
+            if (i == 74) {
+                System.out.println("");
+            }
         }
     }
 
